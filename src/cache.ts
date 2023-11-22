@@ -1,10 +1,10 @@
 import { ethers } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
 
-let gasPrice = parseUnits('0.1', 9)
-
 export const arbitrumGasCache = (provider: ethers.providers.Provider) => {
-  const fn = () => {
+  let gasPrice = parseUnits('0.1', 9)
+
+  const setFn = () => {
     provider
       .getGasPrice()
       .then((gp) => {
@@ -15,5 +15,11 @@ export const arbitrumGasCache = (provider: ethers.providers.Provider) => {
       })
   }
 
-  setInterval(fn, 10_000)
+  const readFn = () => {
+    return gasPrice
+  }
+
+  setInterval(setFn, 10_000)
+
+  return { setFn, readFn }
 }

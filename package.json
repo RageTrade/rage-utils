@@ -21,6 +21,7 @@
     "@biconomy-devx/paymaster": "2.0.43",
     "dotenv": "^16.3.1",
     "ethers": "5.7.2",
-    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/standalone"
+    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/standalone",
+    "zod": "^3.22.4"
   }
 }

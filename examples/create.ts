@@ -17,7 +17,7 @@ async function main() {
   const markets = await gmxV2.supportedMarkets(undefined, undefined)
   const ethMarket = markets.find((e) => e.marketId === '42161-GMXV2-0x70d95587d40A2caf56bd97485aB3Eec10Bee6336')!
 
-  // create eth long
+  // create eth short
   const orderData: CreateOrder = {
     type: 'MARKET',
     direction: 'SHORT',

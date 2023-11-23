@@ -1,4 +1,4 @@
-import { init, createAccount } from '../src'
+import { init, createAccount, setupExecute } from '../src'
 import GmxV2Service from 'perp-aggregator-sdk/src/exchanges/gmxv2'
 
 async function main() {
@@ -6,9 +6,10 @@ async function main() {
   const gmxV2 = new GmxV2Service()
 
   const account = await createAccount(env.signer, env.bundler)
+  const address = await account.getAccountAddress()
 
   // get all positions
-  const position = await gmxV2.getAllPositions(account.accountAddress!, undefined)
+  const position = await gmxV2.getAllPositions(address, undefined)
   console.dir(position, { depth: 4 })
 }
 

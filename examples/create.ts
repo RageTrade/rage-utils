@@ -10,6 +10,7 @@ async function main() {
   const gmxV2 = new GmxV2Service()
 
   const account = await createAccount(env.signer, env.bundler)
+  const address = await account.getAccountAddress()
 
   const { executeTransactions } = setupExecute(account)
 
@@ -28,7 +29,7 @@ async function main() {
     marginDelta: { amount: FixedNumber.fromString('0.005', 18), isTokenAmount: true },
   }
 
-  const unsignedTxs = await gmxV2.increasePosition([orderData], account.accountAddress!)
+  const unsignedTxs = await gmxV2.increasePosition([orderData], address)
   const mapped = unsignedTxs.map((t) => {
     return { to: t.to, data: t.data, value: t.value } as Transaction
   })

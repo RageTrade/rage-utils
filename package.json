@@ -2,15 +2,18 @@
   "name": "rage-utils",
   "scripts": {
     "fmt": "prettier --write .",
-    "tsc": "tsc -b"
+    "tsc": "tsc",
+    "build-sdk": "cd node_modules/perp-aggregator-sdk && pnpm i && pnpm build && cd ../.."
   },
   "version": "1.0.0",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.9.4",
+    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/standalone",
     "prettier": "^3.1.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.1.6",
+    "viem": "^1.19.6"
   },
   "dependencies": {
     "@biconomy-devx/account": "2.0.43",
@@ -21,7 +24,7 @@
     "@biconomy-devx/paymaster": "2.0.43",
     "dotenv": "^16.3.1",
     "ethers": "5.7.2",
-    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/standalone",
+    "ethers-v6": "npm:ethers@6.8.0",
     "zod": "^3.22.4"
   }
 }

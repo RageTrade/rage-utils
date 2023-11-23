@@ -7,10 +7,10 @@ export const arbitrumGasCache = (provider: ethers.providers.Provider) => {
   const setFn = () => {
     provider
       .getGasPrice()
-      .then((gp) => {
+      .then((gp: ethers.BigNumber) => {
         gasPrice = gp
       })
-      .catch((e) => {
+      .catch((e: any) => {
         console.log('error while fetching gas', e)
       })
   }
@@ -21,5 +21,5 @@ export const arbitrumGasCache = (provider: ethers.providers.Provider) => {
 
   setInterval(setFn, 10_000)
 
-  return { setFn, readFn }
+  return { readFn }
 }

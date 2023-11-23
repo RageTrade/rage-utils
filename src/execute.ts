@@ -5,8 +5,7 @@ import { BiconomySmartAccountV2 } from '@biconomy-devx/account'
 export const setupExecute = (account: BiconomySmartAccountV2) => {
   const smartAccount = account
 
-  const { setFn, readFn } = arbitrumGasCache(account.provider)
-  setFn()
+  const { readFn } = arbitrumGasCache(account.provider)
 
   const executeTransactions = async (txs: Transaction[]) => {
     const partial = await smartAccount.buildUserOp(txs, {
@@ -23,5 +22,5 @@ export const setupExecute = (account: BiconomySmartAccountV2) => {
     return recepit
   }
 
-  return executeTransactions
+  return { executeTransactions }
 }

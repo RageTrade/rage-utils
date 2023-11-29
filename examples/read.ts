@@ -1,12 +1,12 @@
 import { init, createAccount, setupExecute } from '../src'
-import GmxV2Service from 'perp-aggregator-sdk/src/exchanges/gmxv2'
+import RouterV1 from 'perp-aggregator-sdk/router/RouterV1'
 
 async function main() {
   // takes .env and initializes provider, signer and bundler
   const env = init()
 
   // create gmx v2 instance to use for read and write operations
-  const gmxV2 = new GmxV2Service()
+  const router = new RouterV1()
 
   // creates instance of smart account
   // deployment of smart account is lazy and handled internally
@@ -19,7 +19,7 @@ async function main() {
 
   // get all positions
   // refer sdk for in-depth documentation
-  const position = await gmxV2.getAllPositions(address, undefined)
+  const position = await router.getAllPositions(address, undefined)
   console.dir(position, { depth: 4 })
 }
 

@@ -1,24 +1,21 @@
 {
   "name": "rage-utils",
   "scripts": {
-    "fmt": "prettier --write ."
+    "fmt": "prettier --write .",
+    "build": "cd node_modules/perp-aggregator-sdk && pnpm i && pnpm build && cd ../..",
+    "trade": "tsx examples/eoaTrade.ts",
+    "wallet-gen": "tsx examples/wallet-gen.ts"
   },
   "version": "1.0.0",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.9.4",
-    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/standalone",
+    "perp-aggregator-sdk": "github:RageTrade/Perp-Aggregator-SDK#feat/basic",
     "prettier": "^3.1.0",
     "tsx": "^4.3.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@biconomy-devx/account": "2.0.43",
-    "@biconomy-devx/bundler": "2.0.43",
-    "@biconomy-devx/common": "2.0.43",
-    "@biconomy-devx/core-types": "2.0.43",
-    "@biconomy-devx/modules": "2.0.43",
-    "@biconomy-devx/paymaster": "2.0.43",
     "dotenv": "^16.3.1",
     "ethers": "5.7.2",
     "ethers-v6": "npm:ethers@6.8.0",

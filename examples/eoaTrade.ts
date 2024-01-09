@@ -3,7 +3,7 @@ import { config } from 'dotenv'
 import { Wallet, ethers } from 'ethers'
 import { formatEther } from 'ethers/lib/utils'
 
-import RouterV1 from 'perp-aggregator-sdk/router/RouterV1'
+import RouterV1 from 'perp-aggregator-sdk/router/ConsolidatedRouterV1'
 import { tokens } from 'perp-aggregator-sdk/src/common/tokens'
 import { FixedNumber } from 'perp-aggregator-sdk/src/common/fixedNumber'
 import { UnsignedTxWithMetadata } from 'perp-aggregator-sdk/src/interface'
@@ -39,6 +39,7 @@ const chains = router.supportedChains()
 
 const executeTxs = async (signer: Wallet, txs: UnsignedTxWithMetadata[]) => {
   for (const txData of txs) {
+    console.log({ txData: txData.tx })
     if (!txData.tx) throw new Error('transaction data not found')
     console.log('executing ', txData.heading)
 
@@ -53,9 +54,9 @@ const closeAllPositions = async () => {
   // get all positions for all markets on all protocols
   // refer sdk for in-depth documentation
   const positions = (await router.getAllPositions(signer.address, undefined)).result
-  console.dir(positions, { depth: 4 })
+  // console.log(positions)
 
-  const txs = []
+  let txs: UnsignedTxWithMetadata[] = []
 
   for (const pos of positions) {
     const closeData: ClosePositionData = {
@@ -65,10 +66,11 @@ const closeAllPositions = async () => {
       outputCollateral: tokens.ETH, // input collateral if "undefined"
     }
 
-    txs.push(await router.closePosition([pos], [closeData], signer.address))
+    //@ts-ignore
+    txs = txs.concat(await router.closePosition([pos], [closeData], signer.address))
   }
 
-  console.log(txs)
+  console.log("txs", txs)
 
   //@ts-ignore
   await executeTxs(signer, txs)
@@ -81,14 +83,14 @@ const trade = async () => {
 
   // get supported markets on arbitrum, refer sdk for in-depth documentation
   const markets = await router.supportedMarkets([chains.find((c) => c.id === 42161)!], undefined)
-  // console.dir(markets, { depth: 4 })
+  // console.dir(markets.map((m) => m.marketId))
 
   // filter requried market/s by token symbol. refer sdk for detailed documentation
-  const ethMarketGmxV2 = markets.find((e) => e.marketSymbol === 'ETH')!
+  const ethMarketGmxV2 = markets.find((e) => e.protocolId === 'GMXV2' && e.marketSymbol === 'ETH')!
   // console.dir(ethMarketGmxV2, { depth: 4 })
 
   // get eth index token market for gmx v1
-  const ethMarketGmxV1 = markets.find((e) => e.marketSymbol === 'ETH')!
+  const ethMarketGmxV1 = markets.find((e) => e.protocolId === 'GMXV1' && e.marketSymbol == 'ETH')!
   // console.dir(ethMarketGmxV1, { depth: 4 })
 
   // create eth short
@@ -108,7 +110,10 @@ const trade = async () => {
     type: 'MARKET',
     direction: 'LONG',
     slippage: undefined, // undefined or 0-100
-    triggerData: undefined, // only required for limit orders
+    triggerData: {
+      triggerPrice: (await router.getMarketPrices([ethMarketGmxV1.marketId]))[0], // only required for limit orders
+      triggerAboveThreshold: true,
+    },
     collateral: tokens.ETH,
     marketId: ethMarketGmxV1.marketId,
     sizeDelta: { amount: FixedNumber.fromString('40', 30), isTokenAmount: false }, // in USD e30 tems
@@ -124,10 +129,10 @@ const trade = async () => {
   await executeTxs(signer, unsignedTxsV2)
 }
 
-// trade()
-//   .then(() => console.log('script run complete'))
-//   .catch((e) => console.error(e))
-
-closeAllPositions()
+trade()
   .then(() => console.log('script run complete'))
   .catch((e) => console.error(e))
+
+// closeAllPositions()
+//   .then(() => console.log('script run complete'))
+//   .catch((e) => console.error(e))
